@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>village</title>
+</head>
+<body>
+<form action="/village/insert/" method="POST">
+    名前
+    <p><input type="text" name="name" size="50" minlength="3" maxlength="1000" ></p>
+    数量
+    <p><input type="number" name="count" size="50" minlength="3" maxlength="1000" ></p>
+    賞味期限
+    <p><input type="date" name="date" size="50" minlength="3" maxlength="1000" ></p>
+    <p><input class="button" type="submit" value="追加"></p>
+</form>
+
+{% for list in bought_list %}
+    {{ list }}
+    <form action="/village/delete/" method="POST">
+    <p><input type="hidden" name="id" value="{{ list[0] }}" ></p>
+    <p><input class="button" type="submit" value="取り消し"></p>
+</form>
+{% endfor %}
+</body>
+</html>
