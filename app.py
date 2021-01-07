@@ -7,6 +7,11 @@ app.config.from_pyfile('config.cfg')
 
 
 @app.route('/village/')
+def home():
+    return render_template("home.html")
+
+
+@app.route('/village/bought/')
 def index():
     # print(app.config["SERVER"])
     db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
@@ -34,7 +39,7 @@ def data_insert():
             data_format), tuple(join_point.split(",")))
     db_connection.commit()
 
-    return redirect("/village/", code=302)
+    return redirect("/village/bought/", code=302)
 
 
 @app.route('/village/delete/', methods=["POST"])
@@ -48,7 +53,7 @@ def data_delete():
     )
     db_connection.commit()
 
-    return redirect("/village/", code=302)
+    return redirect("/village/bought/", code=302)
 
 
 @app.route('/village/recipe/')
