@@ -51,7 +51,7 @@
 {% endfor %}
 <form action="/village/bought/insert/" method="POST">
     名前
-    <p><input class="item_name" type="text" name="name" size="50" required></p>
+    <p><input class="item_name" type="text" name="name" size="50" required readonly></p>
     <p><input class="item_id" type="hidden" name="item_id" size="50" required></p>
     数量
     <p><input type="number" name="count" size="50" required></p>
