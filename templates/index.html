@@ -23,7 +23,10 @@
         }).done(function(data){
             console.log(data);
             $(".child").empty();
-
+            for(let i=0;i<data.length;i++){
+                $(".child").append(data[i].join(","));
+                $(".child").append("<br>");
+            }
         }).fail(function(data){
             alert("error");
         });
