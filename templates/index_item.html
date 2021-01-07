@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<form action="/village/item/insert/" method="POST">
+    名前
+    <p><input type="text" name="name" size="50" required></p>
+    ジャンル
+    <select name="genre">
+        <option size="3" value="1"> 野菜 </option>
+        <option size="3" value="2"> 肉 </option>
+        <option size="3" value="3"> 魚介 </option>
+        <option size="3" value="4"> 麺 </option>
+    </select>
+    <p><input class="button" type="submit" value="追加"></p>
+</form>
+{% for list in item_list %}
+    {{ list }}
+    <form action="/village/item/delete/" method="POST">
+        <p><input type="hidden" name="id" value="{{ list[0] }}" required></p>
+        <p><input class="button" type="submit" value="削除"></p>
+    </form>
+{% endfor %}
+</body>
+</html>

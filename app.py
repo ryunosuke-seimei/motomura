@@ -11,6 +11,46 @@ def home():
     return render_template("home.html")
 
 
+@app.route('/village/item/')
+def home_item():
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "select * from item_list")
+    item_list = cursor.fetchall()
+    return render_template("index_item.html",item_list=item_list)
+
+
+@app.route('/village/item/insert/', methods=["POST"])
+def home_item_insert():
+    name = request.form["name"]
+    genre = request.form["genre"]
+    join_point = ",".join([name, genre])
+    data_format = ",".join(["%s"] * 2)
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "INSERT INTO item_list(name,genre) values({})".format(
+            data_format), tuple(join_point.split(",")))
+    db_connection.commit()
+    return redirect("/village/item/", code=302)
+
+
+@app.route('/village/item/delete/', methods=["POST"])
+def home_item_delete():
+    ID = request.form["id"]
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "DELETE FROM item_list WHERE id={}".format(ID)
+    )
+    db_connection.commit()
+    return redirect("/village/item/", code=302)
+
+
 @app.route('/village/bought/')
 def index():
     # print(app.config["SERVER"])
@@ -20,29 +60,34 @@ def index():
     cursor.execute(
         "select * from bought_list")
     bought_list = cursor.fetchall()
-    return render_template("index.html", bought_list=bought_list)
+
+    cursor.execute(
+        "select * from item_list")
+    item_list = cursor.fetchall()
+
+    return render_template("index.html", lists=[bought_list, item_list])
 
 
-@app.route('/village/insert/', methods=["POST"])
+@app.route('/village/bought/insert/', methods=["POST"])
 def data_insert():
-    name = request.form["name"]
+    item_id = request.form["item_id"]
     count = request.form["count"]
     date = request.form["date"]
 
-    join_point = ",".join([name, count, date])
+    join_point = ",".join([item_id, count, date])
     data_format = ",".join(["%s"] * 3)
     db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
     cursor.execute(
-        "INSERT INTO bought_list(name,count,day) values({})".format(
+        "INSERT INTO bought_list(item_id,count,day) values({})".format(
             data_format), tuple(join_point.split(",")))
     db_connection.commit()
 
     return redirect("/village/bought/", code=302)
 
 
-@app.route('/village/delete/', methods=["POST"])
+@app.route('/village/bought/delete/', methods=["POST"])
 def data_delete():
     ID = request.form["id"]
     db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
@@ -112,7 +157,12 @@ def data_recipe_detail(ID):
     cursor.execute(
         "SELECT * FROM recipe_detail_list WHERE recipe_id={}".format(ID))
     recipe_list = cursor.fetchall()
-    send_data = [ID, recipe_list]
+
+    cursor.execute(
+        "select * from item_list")
+    item_list = cursor.fetchall()
+
+    send_data = [ID, recipe_list, item_list]
 
     return render_template("detail_recipe.html", send_data=send_data)
 
@@ -120,18 +170,20 @@ def data_recipe_detail(ID):
 @app.route('/village/recipe/detail/insert/', methods=["POST"])
 def data_recipe_detail_insert():
     ID = request.form["id"]
-    name = request.form["name"]
+    item_id = request.form["item_id"]
     count = request.form["count"]
 
-    join_point = ",".join([ID, name, count])
+    join_point = ",".join([ID, item_id, count])
     data_format = ",".join(["%s"] * 3)
     db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
     cursor.execute(
-        "INSERT INTO recipe_detail_list(recipe_id,sozai,count) values({})".format(
+        "INSERT INTO recipe_detail_list(recipe_id,item_id,count) values({})".format(
             data_format), tuple(join_point.split(",")))
     db_connection.commit()
+
+
 
     return redirect("/village/recipe/detail/{}/".format(ID), code=302)
 
@@ -158,23 +210,25 @@ def data_recipe_check():
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
     cursor.execute(
-        "select * from recipe_list "
+        "select DISTINCT recipe_list.id, recipe_list.name from recipe_list "
         "join recipe_detail_list on recipe_list.id=recipe_detail_list.recipe_id "
+        "join bought_list on recipe_detail_list.item_id=bought_list.item_id "
         "where recipe_list.genre1={} and recipe_list.genre2={}".format(genre1, genre2)
     )
-    recipe_list = cursor.fetchall()
-    numbers = []
-    for number in recipe_list:
-        numbers.append(number[0])
-    numbers = list(set(numbers))
-    result = []
-    for number in numbers:
-        temp_list = []
-        for target in recipe_list:
-            if target[0] == number:
-                temp_list.append(target)
-        result.append(temp_list)
-    return Response(json.dumps(result),  mimetype='application/json')
+    result = cursor.fetchall()
+    list_child = []
+    for child in result:
+        child_id = child[0]
+        child_name = child[1]
+        print(child_id)
+        cursor.execute(
+            "select * from recipe_detail_list join item_list on recipe_detail_list.item_id=item_list.id where recipe_id={}".format(child_id)
+        )
+        children = cursor.fetchall()
+        children.insert(0, child_name)
+        list_child.append(children)
+
+    return Response(json.dumps(list_child),  mimetype='application/json')
 
 
 if __name__ == '__main__':

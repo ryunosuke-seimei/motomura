@@ -31,13 +31,28 @@
             alert("error");
         });
     }
+    window.onload = function () {
+        $(".item").on("click", function(){
+                let target = $(this).children();
+                $(".item_id").val($(target[0]).val());
+                $(".item_name").val($(target[1]).text());
+            }
+        );
+    }
 
 </script>
 <body>
 <a href="/village/recipe/">recipe</a>
-<form action="/village/insert/" method="POST">
+{% for list in lists[1] %}
+    <div class="item">
+        <input type="hidden" class="id" value="{{ list[0] }}">
+        <span>{{ list[1] }}</span>
+    </div>
+{% endfor %}
+<form action="/village/bought/insert/" method="POST">
     名前
-    <p><input type="text" name="name" size="50" required></p>
+    <p><input class="item_name" type="text" name="name" size="50" required></p>
+    <p><input class="item_id" type="hidden" name="item_id" size="50" required></p>
     数量
     <p><input type="number" name="count" size="50" required></p>
     賞味期限
@@ -45,9 +60,9 @@
     <p><input class="button" type="submit" value="追加"></p>
 </form>
 
-{% for list in bought_list %}
+{% for list in lists[0] %}
     {{ list }}
-    <form action="/village/delete/" method="POST">
+    <form action="/village/bought/delete/" method="POST">
     <p><input type="hidden" name="id" value="{{ list[0] }}" ></p>
     <p><input class="button" type="submit" value="取り消し"></p>
 </form>

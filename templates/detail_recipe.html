@@ -3,14 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 </head>
+<script>
+    window.onload = function () {
+        $(".item").on("click", function(){
+                let target = $(this).children();
+                $(".item_id").val($(target[0]).val());
+                $(".item_name").val($(target[1]).text());
+            }
+        );
+    }
+
+</script>
 <body>
 <a href="/village/recipe/">recipe list</a>
+{% for list in send_data[2] %}
+    <div class="item">
+        <input type="hidden" class="id" value="{{ list[0] }}">
+        <span>{{ list[1] }}</span>
+    </div>
+{% endfor %}
 
 <form action="/village/recipe/detail/insert/" method="POST">
     <input type="hidden" name="id" value="{{ send_data[0] }}">
     名前
-    <p><input type="text" name="name" size="50" required ></p>
+    <p><input class="item_name" type="text" name="name" size="50" required></p>
+    <p><input class="item_id" type="hidden" name="item_id" size="50" required></p>
     個数
     <p><input type="number" name="count" size="50" required ></p>
 
