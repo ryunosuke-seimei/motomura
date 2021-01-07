@@ -10,9 +10,9 @@
 <form action="/village/recipe/detail/insert/" method="POST">
     <input type="hidden" name="id" value="{{ send_data[0] }}">
     名前
-    <p><input type="text" name="name" size="50" minlength="3" maxlength="1000" ></p>
+    <p><input type="text" name="name" size="50" required ></p>
     個数
-    <p><input type="number" name="count" size="50" minlength="3" maxlength="1000" ></p>
+    <p><input type="number" name="count" size="50" required ></p>
 
     <p><input class="button" type="submit" value="追加"></p>
 </form>
