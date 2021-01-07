@@ -3,8 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>village</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 </head>
+<script>
+
+    function change_data() {
+        let genre1 = $(".genre1").val();
+        let genre2 = $(".genre2").val();
+        console.log(genre1);
+        console.log(genre2);
+        $.ajax({
+            url:"/village/recipe_check/",
+            type:"POST",
+            data:{
+                genre1:genre1,
+                genre2:genre2
+            }
+
+        }).done(function(data){
+            console.log(data);
+            $(".child").empty();
+
+        }).fail(function(data){
+            alert("error");
+        });
+    }
+
+</script>
 <body>
+<a href="/village/recipe/">recipe</a>
 <form action="/village/insert/" method="POST">
     名前
     <p><input type="text" name="name" size="50" minlength="3" maxlength="1000" ></p>
@@ -22,5 +49,24 @@
     <p><input class="button" type="submit" value="取り消し"></p>
 </form>
 {% endfor %}
+
+ジャンル1
+<select class="genre1">
+    <option size="3" value="1"> 和食 </option>
+    <option size="3" value="2"> 洋食 </option>
+    <option size="3" value="3"> 中華 </option>
+</select>
+ジャンル2
+<select class="genre2">
+    <option size="3" value="1"> 魚介系 </option>
+    <option size="3" value="2"> 肉系 </option>
+    <option size="3" value="3"> ご飯もの </option>
+    <option size="3" value="4"> 麺系 </option>
+</select>
+<input type="button" value="変更" onclick="change_data();">
+
+<div class="child">
+    empty
+</div>
 </body>
 </html>

@@ -1,5 +1,6 @@
-from flask import Flask, request, render_template, redirect
+from flask import Flask, request, render_template, redirect, Response
 import mysql.connector as db
+import json
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.cfg')
@@ -142,6 +143,33 @@ def data_recipe_detail_delete():
     db_connection.commit()
 
     return redirect("/village/recipe/detail/{}/".format(ID), code=302)
+
+
+@app.route('/village/recipe_check/', methods=["POST"])
+def data_recipe_check():
+    genre1 = request.form["genre1"]
+    genre2 = request.form["genre2"]
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "select * from recipe_list "
+        "join recipe_detail_list on recipe_list.id=recipe_detail_list.recipe_id "
+        "where recipe_list.genre1={} and recipe_list.genre2={}".format(genre1, genre2)
+    )
+    recipe_list = cursor.fetchall()
+    numbers = []
+    for number in recipe_list:
+        numbers.append(number[0])
+    numbers = list(set(numbers))
+    result = []
+    for number in numbers:
+        temp_list = []
+        for target in recipe_list:
+            if target[0] == number:
+                temp_list.append(target)
+        result.append(temp_list)
+    return Response(json.dumps(result),  mimetype='application/json')
 
 
 if __name__ == '__main__':
