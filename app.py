@@ -155,7 +155,7 @@ def data_recipe_detail(ID):
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
     cursor.execute(
-        "SELECT * FROM recipe_detail_list WHERE recipe_id={}".format(ID))
+        "SELECT * FROM recipe_detail_list join item_list on recipe_detail_list.item_id = item_list.id WHERE recipe_id={}".format(ID))
     recipe_list = cursor.fetchall()
 
     cursor.execute(
@@ -183,14 +183,13 @@ def data_recipe_detail_insert():
             data_format), tuple(join_point.split(",")))
     db_connection.commit()
 
-
-
     return redirect("/village/recipe/detail/{}/".format(ID), code=302)
 
 
 @app.route('/village/recipe/detail/delete/', methods=["POST"])
 def data_recipe_detail_delete():
     ID = request.form["id"]
+    ex_id = request.form["ex_id"]
     db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
@@ -199,7 +198,7 @@ def data_recipe_detail_delete():
     )
     db_connection.commit()
 
-    return redirect("/village/recipe/detail/{}/".format(ID), code=302)
+    return redirect("/village/recipe/detail/{}/".format(ex_id), code=302)
 
 
 @app.route('/village/recipe_check/', methods=["POST"])
