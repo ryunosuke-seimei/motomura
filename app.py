@@ -58,7 +58,7 @@ def index():
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
     cursor.execute(
-        "select * from bought_list")
+        "select * from bought_list join item_list on bought_list.item_id = item_list.id ")
     bought_list = cursor.fetchall()
 
     cursor.execute(
