@@ -40,3 +40,11 @@ CREATE TABLE recipe_detail_list( `id` INT NOT NULL AUTO_INCREMENT , `recipe_id` 
 
 ## 実際の動作
 [MOTOMURA](https://reina-raft.xyz/village)
+
+## 今後の展望
+- itemには使用頻度の高いものを厳選する
+- item追加には全ての人ではなく特定のEditerのみが行えるようにする
+- resipeの追加や検索にはcookpadAPIを使用して行う？
+- USER登録機能を付け加える
+- 書き込み媒体をLINEなどに変更する？ユーザビリティの向上　うぇい！！
+
