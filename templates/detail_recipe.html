@@ -134,7 +134,7 @@ header .links{
     </div>
 
     <form action="/village/recipe/detail/insert/" method="POST">
-        <input type="hidden" name="id" value="9">
+        <input type="hidden" name="id" value="{{ send_data[0] }}">
         <span>名前</span>
         <input class="item_name" type="text" name="name" size="50" required="" readonly="">
         <input class="item_id" type="hidden" name="item_id" size="50" required="">
