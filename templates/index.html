@@ -81,6 +81,64 @@ header .links{
   width: calc(100% - 100px);
   margin: 0 50px;
 }
+    .search{
+  display: inline-flex;
+  flex-direction: row;
+  margin: 0 10%;
+  width: 80%;
+  height: 75px;
+  justify-content: space-around;
+  align-items: center;
+  border: 2px solid black;
+}
+.child{
+  display: inline-flex;
+  flex-direction: row;
+  margin: 20px 10%;
+  height: 300px;
+  width: 80%;
+  border: 2px solid black;
+
+  overflow-x: scroll;
+  overflow-y: hidden;
+
+}
+.child .bord{
+  flex: 0 0 auto;
+  display: inline-flex;
+  flex-direction: column;
+  width: 150px;
+  align-items: center;
+  height: calc(100% - 40px);
+  margin: 20px;
+
+  border: 1px solid black;
+}
+.child .bord .title{
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 25px;
+  width: 100%;
+  height: 40px;
+}
+.child .bord .bord-child{
+  display: inline-flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  overflow-x:hidden;
+  overflow-y: scroll;
+  width: 100%;
+  height: calc(100% - 40px);
+  flex-wrap: wrap;
+}
+.child .bord .bord-child span{
+  display: inline-flex;
+  width: 50%;
+  height: 20px;
+  flex: 0 0 auto;
+}
+
 </style>
 <script>
 
@@ -100,10 +158,22 @@ header .links{
         }).done(function(data){
             console.log(data);
             $(".child").empty();
-            for(let i=0;i<data.length;i++){
-                $(".child").append(data[i].join(","));
-                $(".child").append("<br>");
+            for(let i=0; i<data.length; i++){
+                let parent = $("<div class='bord'></div>");
+                let title = $("<div class='title'></div>").text(data[i][0]);
+                let child_parent = $("<div class='bord-child'></div>");
+                for (let number=2;number<data[i].length;number++){
+                    let span_name = $("<span></span>").text(data[i][number][0]);
+                    let span_count = $("<span></span>").text(data[i][number][1]);
+                    let flag = data[i][number][3];
+                    span_name.css({"background-color":"rgba(122,122,122, 0.7)"});
+                    span_count.css({"background-color":"rgba(122,122,122, 0.7)"});
+                    child_parent.append(span_name, span_count);
+                }
+                parent.append(title, child_parent);
+                $(".child").append(parent);
             }
+
         }).fail(function(data){
             alert("error");
         });

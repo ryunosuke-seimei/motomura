@@ -208,6 +208,15 @@ def data_recipe_check():
     db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
                                database=app.config["DATABASES"])
     cursor = db_connection.cursor()
+
+    cursor.execute(
+        "select DISTINCT id,item_id from bought_list"
+    )
+    item_list = cursor.fetchall()
+    item_id = []
+    for item in item_list:
+        item_id.append(item[1])
+
     cursor.execute(
         "select DISTINCT recipe_list.id, recipe_list.name from recipe_list "
         "join recipe_detail_list on recipe_list.id=recipe_detail_list.recipe_id "
@@ -221,11 +230,33 @@ def data_recipe_check():
         child_name = child[1]
         print(child_id)
         cursor.execute(
-            "select * from recipe_detail_list join item_list on recipe_detail_list.item_id=item_list.id where recipe_id={}".format(child_id)
+            "select item_list.name, recipe_detail_list.count, item_list.id from recipe_detail_list join item_list on recipe_detail_list.item_id=item_list.id where recipe_id={}".format(child_id)
         )
         children = cursor.fetchall()
-        children.insert(0, child_name)
-        list_child.append(children)
+        new_children = []
+        count = 0
+        for find_child in children:
+            temp_child = list(find_child)
+            flag = False
+            for item in item_id:
+                if item == temp_child[2]:
+                    flag = True
+            if flag:
+                count += 1
+                temp_child.append(1)
+            else:
+                temp_child.append(0)
+
+            new_children.append(temp_child)
+
+        new_children.insert(0, count)
+        new_children.insert(0, child_name)
+
+        list_child.append(new_children)
+
+    print(list_child)
+    list_child = sorted(list_child, key=lambda x: x[1],reverse=True)
+    print(list_child)
 
     return Response(json.dumps(list_child),  mimetype='application/json')
 
