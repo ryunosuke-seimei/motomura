@@ -132,9 +132,15 @@ header .links{
   height: calc(100% - 40px);
   flex-wrap: wrap;
 }
-.child .bord .bord-child span{
+.child .bord .bord-child span:nth-child(odd){
   display: inline-flex;
-  width: 50%;
+  width: 80%;
+  height: 20px;
+  flex: 0 0 auto;
+}
+.child .bord .bord-child span:nth-child(even){
+  display: inline-flex;
+  width: 20%;
   height: 20px;
   flex: 0 0 auto;
 }
