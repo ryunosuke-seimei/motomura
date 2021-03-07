@@ -45,6 +45,9 @@ def recipes_get():
     cursor.execute(
         "select * from recipes")
     recipe_list = cursor.fetchall()
+
+    for item in recipe_list:
+        print(item)
     
     return jsonify(recipe_list)
 
@@ -57,6 +60,9 @@ def recipes_get_item(id):
     cursor.execute(
         "select * from recipes where id = {}".format(id))
     recipe_list = cursor.fetchall()
+
+    for item in recipe_list:
+        print(item)
 
     return jsonify(recipe_list)
 
