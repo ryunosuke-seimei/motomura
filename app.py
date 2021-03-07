@@ -23,11 +23,6 @@ def recipes_create():
         serves = str(request.json["serves"])
         ingredients = str(request.json["ingredients"])
         cost = str(request.json["cost"])
-
-        join_point = ",".join([title, making_time, serves, ingredients, cost])
-        data_format = ",".join(["%s"] * 5)
-        print("INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(data_format))
-        print(join_point)
     except KeyError:
         message = {
             "message": "Recipe creation failed!",
@@ -35,7 +30,7 @@ def recipes_create():
         }
         return jsonify(message)
 
-
+    data_format = ",".join(["%s"] * 5)
 
     try:
         db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
@@ -43,7 +38,7 @@ def recipes_create():
         cursor = db_connection.cursor()
         cursor.execute(
             "INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(
-                data_format), tuple(join_point.split(",")))
+                data_format), (title, making_time, serves, ingredients, cost))
         db_connection.commit()
         id = db_connection.insert_id()
         message = {
