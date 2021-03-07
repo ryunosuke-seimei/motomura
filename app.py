@@ -18,7 +18,6 @@ def recipes_create():
     data_format = ",".join(["%s"] * 5)
 
     try:
-
         db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
                                    database=app.config["DATABASES"])
         cursor = db_connection.cursor()
@@ -26,7 +25,9 @@ def recipes_create():
             "INSERT INTO recipe (title, making_time, serves, ingredients, cost) values({})".format(
                 data_format), tuple(join_point.split(",")))
         db_connection.commit()
-
+        message = {
+            "message": "Recipe successfully created! "
+        }
     except:
         message = {
             "message": "Recipe creation failed!",
@@ -44,6 +45,7 @@ def recipes_get():
     cursor.execute(
         "select * from recipe")
     recipe_list = cursor.fetchall()
+    
     return jsonify(recipe_list)
 
 
