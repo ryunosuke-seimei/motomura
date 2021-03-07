@@ -22,7 +22,7 @@ def recipes_create():
                                    database=app.config["DATABASES"])
         cursor = db_connection.cursor()
         cursor.execute(
-            "INSERT INTO recipe (title, making_time, serves, ingredients, cost) values({})".format(
+            "INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(
                 data_format), tuple(join_point.split(",")))
         db_connection.commit()
         message = {
@@ -43,7 +43,7 @@ def recipes_get():
                                    database=app.config["DATABASES"])
     cursor = db_connection.cursor()
     cursor.execute(
-        "select * from recipe")
+        "select * from recipes")
     recipe_list = cursor.fetchall()
     
     return jsonify(recipe_list)
