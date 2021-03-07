@@ -44,15 +44,16 @@ def recipes_create():
         id = 3
         message = {
             "message": "Recipe successfully created!",
-            "recipe":{
+            "recipe":[{
                 "id": id,
                 "title": title,
                 "making_time": making_time,
                 "serves": serves,
                 "ingredients": ingredients,
                 "cost": cost
-            }
+            }]
         }
+        print(message)
     except Exception as e:
         print(e)
         message = {
