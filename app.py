@@ -40,10 +40,12 @@ def recipes_create():
             "INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(
                 data_format), (title, making_time, serves, ingredients, cost))
         db_connection.commit()
-
-        cursor.execute("select last_insert_id()")
-        id = db_connection.commit()
+        cursor.close()
         
+        cursor = db_connection.cursor()
+        cursor.execute("select last_insert_id();")
+        id = db_connection.commit()
+
         message = {
             "message": "Recipe successfully created!",
             "recipe":{
