@@ -9,15 +9,20 @@ app.config['JSON_AS_ASCII'] = False
 
 @app.route("/village/recipes", methods=["POST"])
 def recipes_create():
-    data = request.get_data()
-    print(type(data))
+
+    if not request.headers.get("Content-Type") == 'application/json':
+        message = {
+            "message": "Recipe creation failed!",
+            "required": "title, making_time, serves, ingredients, cost"
+        }
+        print("non json")
+        return jsonify(message)
 
     title = request.form.get("title")
     making_time = request.form.get("making_time")
     serves = request.form.get("serves")
     ingredients = request.form.get("ingredients")
     cost = request.form.get("cost")
-
 
     if cost is None or ingredients is None or serves is None or making_time is None or title is None:
         message = {
