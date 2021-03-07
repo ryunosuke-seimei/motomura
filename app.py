@@ -4,7 +4,7 @@ import json
 
 app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.cfg')
-
+app.config['JSON_AS_ASCII'] = False
 
 @app.route("/village/recipes", methods=["POST"])
 def recipes_create():
@@ -48,7 +48,7 @@ def recipes_get():
     recipe_list = cursor.fetchall()
 
     message = {
-        "recipes":[jsonify(recipe_list)]
+        "recipes":jsonify(recipe_list)
     }
     
     return jsonify(message)
@@ -65,7 +65,7 @@ def recipes_get_item(id):
 
     message = {
         "message": "Recipe details bu id",
-        "recipe": [recipe_list]
+        "recipe": recipe_list
     }
     return jsonify(message)
 
