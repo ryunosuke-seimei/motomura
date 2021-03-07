@@ -9,12 +9,17 @@ app.config['JSON_AS_ASCII'] = False
 
 @app.route("/village/recipes", methods=["POST"])
 def recipes_create():
+    data = request.get_data()
+    json_data = data.decode("utf-8")
+    data = json.dumps(json_data)
+
     title = request.form.get("title")
     making_time = request.form.get("making_time")
     serves = request.form.get("serves")
     ingredients = request.form.get("ingredients")
     cost = request.form.get("cost")
-    print(request.get_data())
+
+
     if cost is None or ingredients is None or serves is None or making_time is None or title is None:
         message = {
             "message": "Recipe creation failed!",
@@ -111,9 +116,21 @@ def recipes_patch_item(id):
 
 @app.route("/village/recipes/<id>", methods=["DELETE"])
 def recipes_delete_item(id):
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "select * from recipes where id = {}".format(id))
 
-    pass
+    recipe_list = cursor.fetchone()
+    if len(recipe_list) != 0:
+        # 削除的処理
+        message = {"message": "Recipe successfully removed!"}
+    else:
+        id = 1
+        message = {"message": "No Recipe found"}
 
+    return jsonify(message)
 
 # @app.route('/village/item/')
 # def home_item():
