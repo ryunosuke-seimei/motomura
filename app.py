@@ -18,11 +18,11 @@ def recipes_create():
         print("non json")
         return jsonify(message)
 
-    title = request.form.get("title")
-    making_time = request.form.get("making_time")
-    serves = request.form.get("serves")
-    ingredients = request.form.get("ingredients")
-    cost = request.form.get("cost")
+    title = request.json["title"]
+    making_time = request.json["making_time"]
+    serves = request.json["serves"]
+    ingredients = request.json["ingredients"]
+    cost = request.json["cost"]
 
     if cost is None or ingredients is None or serves is None or making_time is None or title is None:
         message = {
