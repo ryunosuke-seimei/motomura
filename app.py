@@ -9,11 +9,18 @@ app.config['JSON_AS_ASCII'] = False
 
 @app.route("/village/recipes", methods=["POST"])
 def recipes_create():
-    title = request.form["title"]
-    making_time = request.form["making_time"]
-    serves = request.form["serves"]
-    ingredients = request.form["ingredients"]
-    cost = request.form["cost"]
+    title = request.form.get("title")
+    making_time = request.form.get("making_time")
+    serves = request.form.get("serves")
+    ingredients = request.form.get("ingredients")
+    cost = request.form.get("cost")
+    print(request.get_data())
+    if cost is None or ingredients is None or serves is None or making_time is None or title is None:
+        message = {
+            "message": "Recipe creation failed!",
+            "required": "title, making_time, serves, ingredients, cost"
+        }
+        return jsonify(message)
 
     join_point = ",".join([title, making_time, serves, ingredients, cost])
     data_format = ",".join(["%s"] * 5)
@@ -35,7 +42,7 @@ def recipes_create():
                 "making_time": making_time,
                 "serves": serves,
                 "ingredients": ingredients,
-                "cost": cost,
+                "cost": cost
             }
         }
     except:
