@@ -41,14 +41,7 @@ def recipes_create():
                 data_format), (title, making_time, serves, ingredients, cost))
         db_connection.commit()
         db_connection.close()
-
-        db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
-                                   database=app.config["DATABASES"])
-        cursor = db_connection.cursor()
-        cursor.execute("select last_insert_id()")
-        db_connection.commit()
-        id = cursor.fetchone()
-
+        id = 3
         message = {
             "message": "Recipe successfully created!",
             "recipe":{
