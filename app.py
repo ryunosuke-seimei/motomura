@@ -51,7 +51,14 @@ def recipes_get():
 
 @app.route("/village/recipes/<id>", methods=["GET"])
 def recipes_get_item(id):
-    pass
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "select * from recipes where id = {}".format(id))
+    recipe_list = cursor.fetchall()
+
+    return jsonify(recipe_list)
 
 
 @app.route("/village/recipes/<id>", methods=["PATCH"])
@@ -61,6 +68,7 @@ def recipes_patch_item(id):
 
 @app.route("/village/recipes/<id>", methods=["DELETE"])
 def recipes_delete_item(id):
+
     pass
 
 
