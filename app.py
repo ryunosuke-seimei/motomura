@@ -26,7 +26,8 @@ def recipes_create():
 
         join_point = ",".join([title, making_time, serves, ingredients, cost])
         data_format = ",".join(["%s"] * 5)
-
+        print("INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(data_format))
+        print(join_point)
     except KeyError:
         message = {
             "message": "Recipe creation failed!",
