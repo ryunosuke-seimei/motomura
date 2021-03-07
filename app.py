@@ -24,15 +24,18 @@ def recipes_create():
         cursor.execute(
             "INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(
                 data_format), tuple(join_point.split(",")))
-        db_connection.commit()
+        result = db_connection.commit()
         message = {
-            "message": "Recipe successfully created! "
+            "message": "Recipe successfully created!",
+            "recipe":[result]
         }
+        print(message)
     except:
         message = {
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
         }
+        print(message)
 
     return jsonify(message)
 
@@ -48,6 +51,8 @@ def recipes_get():
 
     for item in recipe_list:
         print(item)
+
+    print(jsonify(recipe_list))
     
     return jsonify(recipe_list)
 
@@ -63,6 +68,8 @@ def recipes_get_item(id):
 
     for item in recipe_list:
         print(item)
+    print(jsonify(recipe_list))
+
 
     return jsonify(recipe_list)
 
