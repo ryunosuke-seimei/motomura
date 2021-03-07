@@ -17,25 +17,23 @@ def recipes_create():
         }
         print("non json")
         return jsonify(message)
+    try:
+        title = request.json["title"]
+        making_time = request.json["making_time"]
+        serves = request.json["serves"]
+        ingredients = request.json["ingredients"]
+        cost = request.json["cost"]
 
-    title = request.json["title"]
-    making_time = request.json["making_time"]
-    serves = request.json["serves"]
-    ingredients = request.json["ingredients"]
-    cost = request.json["cost"]
+        join_point = ",".join([title, making_time, serves, ingredients, cost])
+        data_format = ",".join(["%s"] * 5)
 
-    join_point = ",".join([title, making_time, serves, ingredients, cost])
-    data_format = ",".join(["%s"] * 5)
-
-    print(join_point)
-
-    if cost is None or ingredients is None or serves is None or making_time is None or title is None:
+    except:
         message = {
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
         }
         return jsonify(message)
-
+  
 
 
     try:
