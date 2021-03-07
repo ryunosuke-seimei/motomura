@@ -56,7 +56,8 @@ def recipes_create():
                 "cost": cost
             }
         }
-    except:
+    except Exception as e:
+        print(e)
         message = {
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
