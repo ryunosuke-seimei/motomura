@@ -25,17 +25,15 @@ def recipes_create():
             "INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(
                 data_format), tuple(join_point.split(",")))
         result = db_connection.commit()
-        message = {
+        message = [{
             "message": "Recipe successfully created!",
             "recipe":[result]
-        }
-        print(message)
+        }]
     except:
-        message = {
+        message = [{
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
-        }
-        print(message)
+        }]
 
     return jsonify(message)
 
@@ -49,12 +47,11 @@ def recipes_get():
         "select * from recipes")
     recipe_list = cursor.fetchall()
 
-    for item in recipe_list:
-        print(item)
-
-    print(jsonify(recipe_list))
+    message = {
+        "recipes":[jsonify(recipe_list)]
+    }
     
-    return jsonify(recipe_list)
+    return jsonify(message)
 
 
 @app.route("/village/recipes/<id>", methods=["GET"])
@@ -66,12 +63,11 @@ def recipes_get_item(id):
         "select * from recipes where id = {}".format(id))
     recipe_list = cursor.fetchall()
 
-    for item in recipe_list:
-        print(item)
-    print(jsonify(recipe_list))
-
-
-    return jsonify(recipe_list)
+    message = {
+        "message": "Recipe details bu id",
+        "recipe": [recipe_list]
+    }
+    return jsonify(message)
 
 
 @app.route("/village/recipes/<id>", methods=["PATCH"])
