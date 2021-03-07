@@ -24,6 +24,11 @@ def recipes_create():
     ingredients = request.json["ingredients"]
     cost = request.json["cost"]
 
+    join_point = ",".join([title, making_time, serves, ingredients, cost])
+    data_format = ",".join(["%s"] * 5)
+
+    print(join_point)
+
     if cost is None or ingredients is None or serves is None or making_time is None or title is None:
         message = {
             "message": "Recipe creation failed!",
@@ -31,8 +36,7 @@ def recipes_create():
         }
         return jsonify(message)
 
-    join_point = ",".join([title, making_time, serves, ingredients, cost])
-    data_format = ",".join(["%s"] * 5)
+
 
     try:
         db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
