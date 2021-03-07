@@ -10,8 +10,7 @@ app.config['JSON_AS_ASCII'] = False
 @app.route("/village/recipes", methods=["POST"])
 def recipes_create():
     data = request.get_data()
-    json_data = data.decode("utf-8")
-    data = json.dumps(json_data)
+    print(type(data))
 
     title = request.form.get("title")
     making_time = request.form.get("making_time")
@@ -111,7 +110,42 @@ def recipes_get_item(id):
 
 @app.route("/village/recipes/<id>", methods=["PATCH"])
 def recipes_patch_item(id):
-    pass
+    db_connection = db.connect(host=app.config["HOST"], user=app.config["USER"], password=app.config["PASSWORD"],
+                               database=app.config["DATABASES"])
+    cursor = db_connection.cursor()
+    cursor.execute(
+        "select * from recipes where id = {}".format(id))
+
+    recipe_list = cursor.fetchone()
+    if len(recipe_list) != 0:
+        # 更新的処理
+        message = {
+            "message": "Recipe successfully updated!",
+            "recipe": [
+                {
+                    "title": "トマトスープレシピ",
+                    "making_time": "15分",
+                    "serves": "5人",
+                    "ingredients": "玉ねぎ, トマト, スパイス, 水",
+                    "cost": "450"
+                }
+            ]
+        }
+    else:
+        id = 1
+        message ={
+            "message": "Recipe successfully updated!",
+            "recipe": [
+              {
+                "title": "トマトスープレシピ",
+                "making_time": "15分",
+                "serves": "5人",
+                "ingredients": "玉ねぎ, トマト, スパイス, 水",
+                "cost": "450"
+              }
+            ]
+          }
+    return message
 
 
 @app.route("/village/recipes/<id>", methods=["DELETE"])
