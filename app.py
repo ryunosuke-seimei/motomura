@@ -48,7 +48,7 @@ def recipes_get():
     recipe_list = cursor.fetchall()
 
     message = {
-        "recipes":jsonify(recipe_list)
+        "recipes": recipe_list
     }
     
     return jsonify(message)
@@ -64,7 +64,7 @@ def recipes_get_item(id):
     recipe_list = cursor.fetchall()
 
     message = {
-        "message": "Recipe details bu id",
+        "message": "Recipe details by id",
         "recipe": recipe_list
     }
     return jsonify(message)
