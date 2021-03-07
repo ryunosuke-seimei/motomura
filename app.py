@@ -6,6 +6,7 @@ app = Flask(__name__, instance_relative_config=True)
 app.config.from_pyfile('config.cfg')
 app.config['JSON_AS_ASCII'] = False
 
+
 @app.route("/village/recipes", methods=["POST"])
 def recipes_create():
     title = request.form["title"]
@@ -24,16 +25,24 @@ def recipes_create():
         cursor.execute(
             "INSERT INTO recipes (title, making_time, serves, ingredients, cost) values({})".format(
                 data_format), tuple(join_point.split(",")))
-        result = db_connection.commit()
-        message = [{
+        db_connection.commit()
+        id = db_connection.insert_id()
+        message = {
             "message": "Recipe successfully created!",
-            "recipe":[result]
-        }]
+            "recipe":{
+                "id": id,
+                "title": title,
+                "making_time": making_time,
+                "serves": serves,
+                "ingredients": ingredients,
+                "cost": cost,
+            }
+        }
     except:
-        message = [{
+        message = {
             "message": "Recipe creation failed!",
             "required": "title, making_time, serves, ingredients, cost"
-        }]
+        }
 
     return jsonify(message)
 
@@ -45,10 +54,21 @@ def recipes_get():
     cursor = db_connection.cursor()
     cursor.execute(
         "select * from recipes")
-    recipe_list = cursor.fetchall()
 
+    recipe_list = cursor.fetchall()
+    data = []
+    for item in recipe_list:
+        temp = {
+            "id": item[0],
+            "title": item[1],
+            "making_time": item[2],
+            "serves": item[3],
+            "ingredients": item[4],
+            "cost": item[5]
+        }
+        data.append(temp)
     message = {
-        "recipes": recipe_list
+        "recipes": data
     }
     
     return jsonify(message)
@@ -61,11 +81,18 @@ def recipes_get_item(id):
     cursor = db_connection.cursor()
     cursor.execute(
         "select * from recipes where id = {}".format(id))
-    recipe_list = cursor.fetchall()
 
+    recipe_list = cursor.fetchone()
     message = {
         "message": "Recipe details by id",
-        "recipe": recipe_list
+        "recipe": [{
+            "id":recipe_list[0],
+            "title":recipe_list[1],
+            "making_time":recipe_list[2],
+            "serves":recipe_list[3],
+            "ingredients":recipe_list[4],
+            "cost":recipe_list[5]
+        }]
     }
     return jsonify(message)
 
